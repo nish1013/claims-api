@@ -88,10 +88,6 @@ export class ClaimsController {
     @Param('id') id: string,
     @Body() documents: ClaimDocsDto,
   ): Promise<ClaimDto> {
-    if (!documents.urls.length) {
-      throw new BadRequestException('No documents provided');
-    }
-
     const updated = await this.claimsService.updateClaimDocuments(
       id,
       documents.urls,
