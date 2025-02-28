@@ -6,6 +6,7 @@ import {
   Param,
   Body,
   NotFoundException,
+  BadRequestException,
 } from '@nestjs/common';
 import { ClaimsService } from './claims.service';
 import {
@@ -18,6 +19,7 @@ import {
 import { UpdateClaimDto } from './dto/update.claim.dto';
 import { CreateClaimDto } from './dto/create.claim.dto';
 import { ClaimDto } from './dto/claim.dto';
+import { ClaimDocsDto } from './dto/claim.docs.dto';
 
 @ApiTags('Claims')
 @ApiBearerAuth()
@@ -72,5 +74,32 @@ export class ClaimsController {
     }
 
     return claim;
+  }
+
+  @Patch(':id/documents')
+  @ApiOperation({ summary: 'Add documents to a claim' })
+  @ApiResponse({
+    status: 200,
+    description: 'Documents added successfully',
+  })
+  @ApiResponse({ status: 404, description: 'Claim not found' })
+  @ApiBody({ type: ClaimDocsDto })
+  async addClaimDocuments(
+    @Param('id') id: string,
+    @Body() documents: ClaimDocsDto,
+  ): Promise<ClaimDto> {
+    if (!documents.urls.length) {
+      throw new BadRequestException('No documents provided');
+    }
+
+    const updated = await this.claimsService.updateClaimDocuments(
+      id,
+      documents.urls,
+    );
+    if (!updated) {
+      throw new NotFoundException(`Claim with ID ${id} not found`);
+    }
+
+    return updated;
   }
 }

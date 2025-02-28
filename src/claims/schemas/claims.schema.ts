@@ -15,6 +15,9 @@ export class Claim extends Document {
 
   @Prop()
   description: string;
+
+  @Prop({ type: [String], default: [] })
+  documentUrls: string[];
 }
 
 export const ClaimSchema = SchemaFactory.createForClass(Claim);

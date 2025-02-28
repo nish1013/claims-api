@@ -33,4 +33,24 @@ export class ClaimsService {
       .exec();
     return updatedClaim ? ClaimMapper.toDto(updatedClaim) : null;
   }
+
+  // TODO: Add validation for documentUrls
+  async updateClaimDocuments(
+    id: string,
+    documentUrls: string[],
+  ): Promise<ClaimDto | null> {
+    if (!documentUrls.length) {
+      return null;
+    }
+
+    const updatedClaim = await this.claimModel
+      .findByIdAndUpdate(
+        id,
+        { $push: { documentUrls: { $each: documentUrls } } },
+        { new: true },
+      )
+      .exec();
+
+    return updatedClaim ? ClaimMapper.toDto(updatedClaim) : null;
+  }
 }
