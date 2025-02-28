@@ -12,7 +12,6 @@ import { ApiTags, ApiOperation, ApiBody, ApiResponse } from '@nestjs/swagger';
 import { UpdateClaimDto } from './dto/update.claim.dto';
 import { CreateClaimDto } from './dto/create.claim.dto';
 import { ClaimDto } from './dto/claim.dto';
-import { NotFoundError } from 'rxjs';
 
 @ApiTags('Claims')
 @Controller('claims')
