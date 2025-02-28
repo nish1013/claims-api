@@ -35,6 +35,17 @@ Swagger documentation is available at:
 http://localhost:3000/api
 ```
 
+### Using Swagger Authentication
+1. Open the Swagger UI at `http://localhost:3000/api`.
+2. Click on the "Authorize" button.
+3. Enter the **Bearer token** obtained from the `/auth/login` endpoint in the format:
+   ```
+   Bearer your.jwt.token
+   ```
+4. Click "Authorize" to use authenticated requests in Swagger.
+
+Now, you can test protected endpoints directly from the Swagger UI.
+
 ## Running Tests
 
 ```sh
@@ -50,7 +61,11 @@ npm run test:cov
 Configure your `.env` file with the required values:
 
 ```sh
-MONGO_URI=mongodb://localhost:27017/claims-api
+MONGO_URI=mongodb://localhost:27017/your-database-name
+AUTH_SECRET=your-jwt-secret
+AUTH_EXPIRES_IN=1d
+AUTH_USERNAME=username
+AUTH_PASSWORD=password
 PORT=3000
 ```
 
