@@ -11,7 +11,7 @@ export class Claim extends Document {
   policyNumber: string;
 
   @Prop({ required: true, enum: ClaimStatus, default: ClaimStatus.PENDING })
-  status: string;
+  status: ClaimStatus;
 
   @Prop()
   description: string;

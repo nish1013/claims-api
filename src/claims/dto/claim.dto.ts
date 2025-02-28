@@ -19,7 +19,7 @@ export class ClaimDto {
     enum: ClaimStatus,
     description: 'Claim Status',
   })
-  status: string;
+  status: ClaimStatus;
 
   constructor(partial: Partial<ClaimDto>) {
     Object.assign(this, partial);
