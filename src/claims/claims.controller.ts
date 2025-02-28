@@ -8,7 +8,13 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { ClaimsService } from './claims.service';
-import { ApiTags, ApiOperation, ApiBody, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBody,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { UpdateClaimDto } from './dto/update.claim.dto';
 import { CreateClaimDto } from './dto/create.claim.dto';
 import { ClaimDto } from './dto/claim.dto';
