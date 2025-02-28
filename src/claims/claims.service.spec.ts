@@ -4,18 +4,18 @@ import { ClaimsService } from './claims.service';
 import { Claim } from './schemas/claims.schema';
 import { Model, Types } from 'mongoose';
 import { ClaimStatus } from './interfaces/claim.status';
+import { ClaimDto } from './dto/claim.dto';
+import { ClaimMapper } from './mappers/claim.mapper';
 
-const createMockClaim = (): Partial<Claim> & {
-  _id: Types.ObjectId;
-  save: jest.Mock;
-} => ({
-  _id: new Types.ObjectId(),
-  userId: '123',
-  policyNumber: 'ABC123',
-  description: 'Test claim',
-  status: ClaimStatus.PENDING,
-  save: jest.fn().mockResolvedValue(true),
-});
+const createMockClaim = (): ClaimDto => {
+  return new ClaimDto({
+    _id: new Types.ObjectId().toString(),
+    userId: '123',
+    policyNumber: 'ABC123',
+    description: 'Test claim',
+    status: ClaimStatus.PENDING,
+  });
+};
 
 const createQueryMock = <T>(
   result: T,
@@ -50,36 +50,61 @@ describe('ClaimsService', () => {
     jest.clearAllMocks();
   });
 
+  describe('createClaim', () => {
+    it('should create a claim and return ClaimDto', async () => {
+      const mockClaim = createMockClaim();
+      (model.create as jest.Mock).mockResolvedValueOnce(mockClaim);
+
+      const result = await service.createClaim(mockClaim);
+
+      expect(model.create).toHaveBeenCalledWith(mockClaim);
+      expect(result).toEqual(mockClaim);
+    });
+  });
+
+  describe('getAllClaims', () => {
+    it('should return all claims as ClaimDto array', async () => {
+      const claimsArray = [createMockClaim()];
+      (model.find as jest.Mock).mockReturnValueOnce(
+        createQueryMock(claimsArray),
+      );
+
+      const result = await service.getAllClaims();
+
+      expect(model.find).toHaveBeenCalled();
+      expect(result).toEqual(claimsArray);
+    });
+  });
+
   describe('getClaimById', () => {
-    it('should return a claim by ID', async () => {
+    it('should return a claim by ID as ClaimDto', async () => {
       const mockClaim = createMockClaim();
       (model.findById as jest.Mock).mockReturnValueOnce(
         createQueryMock(mockClaim),
       );
 
-      const result = await service.getClaimById(mockClaim._id.toString());
-      expect(model.findById).toHaveBeenCalledWith(mockClaim._id.toString());
+      const result = await service.getClaimById(mockClaim._id);
+
+      expect(model.findById).toHaveBeenCalledWith(mockClaim._id);
       expect(result).toEqual(mockClaim);
     });
   });
 
-  describe('updateClaimStatus', () => {
-    it('should update claim status', async () => {
+  describe('updateClaim', () => {
+    it('should update claim and return updated ClaimDto', async () => {
       const mockClaim = createMockClaim();
-      const newStatus = 'approved';
-      const updatedClaim = { ...mockClaim, status: newStatus };
+      const updateData = { status: ClaimStatus.APPROVED };
+      const updatedClaim = { ...mockClaim, ...updateData };
 
       (model.findByIdAndUpdate as jest.Mock).mockReturnValueOnce(
         createQueryMock(updatedClaim),
       );
 
-      const result = await service.updateClaimStatus(
-        mockClaim._id.toString(),
-        newStatus,
-      );
+      const result = await service.updateClaim(mockClaim._id, updateData);
+
       expect(model.findByIdAndUpdate).toHaveBeenCalledWith(
-        mockClaim._id.toString(),
-        { status: newStatus },
+        mockClaim._id,
+        updateData,
         { new: true },
       );
       expect(result).toEqual(updatedClaim);
