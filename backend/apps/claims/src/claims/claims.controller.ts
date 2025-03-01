@@ -20,6 +20,7 @@ import { UpdateClaimDto } from './dto/update.claim.dto';
 import { CreateClaimDto } from './dto/create.claim.dto';
 import { ClaimDto } from './dto/claim.dto';
 import { ClaimDocsDto } from './dto/claim.docs.dto';
+import { Public } from 'src/api.decorator';
 
 @ApiTags('Claims')
 @ApiBearerAuth()
@@ -36,6 +37,7 @@ export class ClaimsController {
   }
 
   @Get()
+  @Public()
   @ApiOperation({ summary: 'Get all claims' })
   @ApiResponse({ status: 200, type: [ClaimDto] })
   async getAllClaims(): Promise<ClaimDto[]> {
