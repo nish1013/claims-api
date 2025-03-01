@@ -7,7 +7,11 @@ export class UploadsService {
     return new Promise((resolve, reject) => {
       cloudinary.uploader
         .upload_stream(
-          { folder: 'claims-documents', resource_type: 'auto' },
+          {
+            folder: 'claims-documents',
+            resource_type: 'auto',
+            access_mode: 'public',
+          },
           (error, result) => {
             if (error) {
               return reject(error);

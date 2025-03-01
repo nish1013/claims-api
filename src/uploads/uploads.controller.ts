@@ -40,7 +40,6 @@ export class UploadsController {
   })
   @UseInterceptors(FilesInterceptor('files', 5))
   async uploadFiles(@UploadedFiles() files: Express.Multer.File[]) {
-    console.log(files);
     const uploadedUrls = await Promise.all(
       files.map((file) => this.uploadsService.uploadFile(file)),
     );
