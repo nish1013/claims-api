@@ -30,11 +30,14 @@ export function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-6">
-      <h1 className="text-3xl font-bold">Insurance Claims</h1>
-      {error && <p className="text-red-400">{error}</p>}
-      <ClaimForm onSubmit={handleClaimSubmit} />
-      <ClaimList claims={claims} />
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-900 text-white p-6 w-full">
+      <div className="w-full max-w-2xl text-center">
+        <h1 className="text-3xl font-bold mb-6">Insurance Claims</h1>
+        {error && <p className="text-red-400">{error}</p>}
+        <ClaimForm onSubmit={handleClaimSubmit} />
+        <ClaimList claims={claims} />
+      </div>
     </div>
   )
+   
 }
