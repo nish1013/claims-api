@@ -15,7 +15,9 @@ export default function LoginModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     const result = await login(username, password)
-    if (result.error) return setError(result.error)
+    if (result.error) {
+      return setError(result.error)
+    }
     onLogin(result.user)
     onClose()
   }

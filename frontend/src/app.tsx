@@ -4,6 +4,7 @@ import { ClaimList } from './components/ClaimList'
 import LoginModal from './components/LoginModal'
 import { fetchClaims, submitClaim, uploadClaimDocuments } from './api/api'
 import { logout } from './api/auth'
+import { isTokenExpired } from './api/token'
 
 export function App() {
   const [claims, setClaims] = useState([])
@@ -12,6 +13,13 @@ export function App() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    if (isTokenExpired()) {
+      logout()
+      setUser(null)
+      window.location.reload()
+      return
+    }
+
     fetchClaims()
       .then(setClaims)
       .catch(() => setError('Failed to load claims'))
@@ -24,6 +32,13 @@ export function App() {
     file: File
   ) => {
     if (!user) {
+      setShowLogin(true)
+      return
+    }
+
+    if (isTokenExpired()) {
+      logout()
+      setUser(null)
       setShowLogin(true)
       return
     }
