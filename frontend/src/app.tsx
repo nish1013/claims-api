@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { ClaimForm } from './components/ClaimForm'
 import { ClaimList } from './components/ClaimList'
 import LoginModal from './components/LoginModal'
-import { fetchClaims, submitClaim, uploadClaimDocuments } from './api/api'
+import { fetchClaims, submitClaim, uploadClaimDocuments, fetchClaimsSummary } from './api/api'
 import { logout } from './api/auth'
 import { isTokenExpired } from './api/token'
 
@@ -20,9 +20,15 @@ export function App() {
       return
     }
 
-    fetchClaims()
-      .then(setClaims)
-      .catch(() => setError('Failed to load claims'))
+    if (!user) {
+      fetchClaimsSummary()
+        .then(setClaims)
+        .catch(() => setError('Failed to fetch claims summary list'))
+    } else {
+      fetchClaims()
+        .then(setClaims)
+        .catch(() => setError('Failed to load claims list'))
+    }
   }, [])
 
   const handleClaimSubmit = async (

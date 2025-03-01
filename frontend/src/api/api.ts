@@ -6,6 +6,12 @@ export const fetchClaims = async () => {
   return res.json()
 }
 
+// Fetch all claims summary (public)
+export const fetchClaimsSummary = async () => {
+  const res = await fetch(`${API_URL}/claims/summary`)
+  return res.json()
+}
+
 // Submit a new claim (JSON request)
 export const submitClaim = async (claimData: {
   userId: string
@@ -36,7 +42,9 @@ export const submitClaim = async (claimData: {
 // Upload documents for a claim (Multipart FormData request)
 export const uploadClaimDocuments = async (claimId: string, files: File[]) => {
   const token = localStorage.getItem('token')
-  if (!token) throw new Error('Not authenticated')
+  if (!token) {
+    throw new Error('Not authenticated')
+  }
 
   const formData = new FormData()
   files.forEach((file) => formData.append('files', file))
@@ -47,7 +55,9 @@ export const uploadClaimDocuments = async (claimId: string, files: File[]) => {
     headers: { Authorization: `Bearer ${token}` },
   })
 
-  if (!res.ok) throw new Error('Failed to upload document')
+  if (!res.ok) {
+    throw new Error('Failed to upload document')
+  }
 
   return res.json() // Expecting { documentUrls: ["..."] }
 }
