@@ -27,7 +27,7 @@ export function ClaimForm({ onSubmit }: ClaimFormProps) {
         type="text"
         placeholder="User ID"
         value={userId}
-        onChange={(e) => setUserId(e.target.value)}
+        onChange={(e) => setUserId((e.target as HTMLInputElement).value)}
         required
       />
       <input
@@ -35,20 +35,22 @@ export function ClaimForm({ onSubmit }: ClaimFormProps) {
         type="text"
         placeholder="Policy Number"
         value={policyNumber}
-        onChange={(e) => setPolicyNumber(e.target.value)}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          setPolicyNumber((e.target as HTMLInputElement).value)
+        }
         required
       />
       <textarea
         className="w-full p-3 rounded bg-gray-800 text-white border border-gray-600 focus:ring-2 focus:ring-blue-500"
         placeholder="Description"
         value={description}
-        onChange={(e) => setDescription(e.target.value)}
+        onChange={(e) => setDescription((e.target as HTMLInputElement).value)}
         required
       ></textarea>
       <input
         type="file"
         className="w-full p-3 bg-gray-800 text-white border border-gray-600"
-        onChange={(e) => setFile(e.target.files?.[0] || null)}
+        onChange={(e) => setFile((e.target as HTMLInputElement).files?.[0] || null)}
         accept="image/png, image/jpeg, application/pdf"
       />
       <button type="submit" className="w-full bg-blue-600 hover:bg-blue-500 p-3 rounded text-white">

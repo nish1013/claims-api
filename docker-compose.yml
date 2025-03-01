@@ -1,0 +1,41 @@
+services:
+  claims-api:
+    build:
+      context: ./backend/apps/claims
+    ports:
+      - "4000:4000"
+    env_file:
+      - ./backend/apps/claims/.env
+    depends_on:
+      - mongo
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "5174:80"
+    env_file:
+      - ./frontend/.env
+    depends_on:
+      - claims-api
+    networks:
+      - app-network
+
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - app-network
+
+volumes:
+  mongo-data:
+
+networks:
+  app-network:
+    driver: bridge
