@@ -27,7 +27,7 @@ export function ClaimList({ claims }: ClaimListProps) {
         {claims.map((claim) => (
           <div key={claim._id} className="bg-gray-800 p-4 rounded-lg shadow-md">
             <div className="flex justify-between items-center">
-              <strong className="text-blue-400">{claim.policyNumber}</strong>
+              <strong className="text-blue-400 pr-2">{claim.policyNumber}</strong>
               <span
                 className={`px-3 py-1 rounded-full text-xs font-semibold ${
                   claim.status === ClaimStatus.APPROVED
