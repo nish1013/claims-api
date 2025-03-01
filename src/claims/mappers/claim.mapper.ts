@@ -9,6 +9,7 @@ export class ClaimMapper {
       policyNumber: claim.policyNumber,
       description: claim.description,
       status: claim.status,
+      documentUrls: claim.documentUrls,
     });
   }
 

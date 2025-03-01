@@ -21,6 +21,12 @@ export class ClaimDto {
   })
   status: ClaimStatus;
 
+  @ApiProperty({
+    example: ['https://example.com/document1.pdf'],
+    description: 'Document URLs',
+  })
+  documentUrls: string[];
+
   constructor(partial: Partial<ClaimDto>) {
     Object.assign(this, partial);
   }
