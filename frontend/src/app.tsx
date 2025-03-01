@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { ClaimForm } from './components/ClaimForm'
 import { ClaimList } from './components/ClaimList'
 import LoginModal from './components/LoginModal'
+import { Navbar } from './components/NavBar'
 import { fetchClaims, submitClaim, uploadClaimDocuments, fetchClaimsSummary } from './api/api'
 import { logout } from './api/auth'
 import { isTokenExpired } from './api/token'
@@ -59,6 +60,7 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center p-6 w-full">
+      <Navbar />
       {showLogin && (
         <LoginModal onClose={() => setShowLogin(false)} onLogin={(user) => setUser(user)} />
       )}
