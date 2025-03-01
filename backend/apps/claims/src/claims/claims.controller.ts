@@ -21,6 +21,7 @@ import { CreateClaimDto } from './dto/create.claim.dto';
 import { ClaimDto } from './dto/claim.dto';
 import { ClaimDocsDto } from './dto/claim.docs.dto';
 import { Public } from '../api.decorator';
+import { ClaimSummaryDto } from './dto/claim.summary.dto';
 
 @ApiTags('Claims')
 @ApiBearerAuth()
@@ -36,7 +37,15 @@ export class ClaimsController {
     return this.claimsService.createClaim(claimData);
   }
 
-  @Get()
+  @Get('summary')
+  @Public()
+  @ApiOperation({ summary: 'Get all claims summary' })
+  @ApiResponse({ status: 200, type: [ClaimDto] })
+  async getAllClaimsSummary(): Promise<ClaimSummaryDto[]> {
+    return this.claimsService.getAllClaimsSummary();
+  }
+
+  @Get('summary')
   @Public()
   @ApiOperation({ summary: 'Get all claims' })
   @ApiResponse({ status: 200, type: [ClaimDto] })

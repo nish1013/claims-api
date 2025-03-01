@@ -4,6 +4,8 @@ import { Model } from 'mongoose';
 import { Claim } from './schemas/claims.schema';
 import { ClaimDto } from './dto/claim.dto';
 import { ClaimMapper } from './mappers/claim.mapper';
+import { ClaimSummaryDto } from './dto/claim.summary.dto';
+import { ClaimSummaryMapper } from './mappers/claim.summary.mapper';
 
 @Injectable()
 export class ClaimsService {
@@ -17,6 +19,11 @@ export class ClaimsService {
   async getAllClaims(): Promise<ClaimDto[]> {
     const claims = await this.claimModel.find().exec();
     return claims.map(ClaimMapper.toDto);
+  }
+
+  async getAllClaimsSummary(): Promise<ClaimSummaryDto[]> {
+    const claims = await this.claimModel.find().exec();
+    return claims.map(ClaimSummaryMapper.toDto);
   }
 
   async getClaimById(id: string): Promise<ClaimDto | null> {
