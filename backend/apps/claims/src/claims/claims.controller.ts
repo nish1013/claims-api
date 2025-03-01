@@ -79,11 +79,8 @@ export class ClaimsController {
   }
 
   @Patch(':id/documents')
-  @ApiOperation({ summary: 'Add documents to a claim' })
-  @ApiResponse({
-    status: 200,
-    description: 'Documents added successfully',
-  })
+  @ApiOperation({ summary: 'Manually add documents to a claim' })
+  @ApiResponse({ status: 200, description: 'Documents added successfully' })
   @ApiResponse({ status: 404, description: 'Claim not found' })
   @ApiBody({ type: ClaimDocsDto })
   async addClaimDocuments(
@@ -97,7 +94,6 @@ export class ClaimsController {
     if (!updated) {
       throw new NotFoundException(`Claim with ID ${id} not found`);
     }
-
     return updated;
   }
 }
