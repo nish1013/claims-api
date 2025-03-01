@@ -15,7 +15,10 @@ import { TokenDto } from './dto/token.dto';
 import { Public } from '../api.decorator';
 
 @ApiTags('Auth')
-@Controller('auth')
+@Controller({
+  path: 'auth',
+  version: '1',
+})
 export class AuthController {
   constructor(private authService: AuthService) {}
 

@@ -25,7 +25,10 @@ import { ClaimSummaryDto } from './dto/claim.summary.dto';
 
 @ApiTags('Claims')
 @ApiBearerAuth()
-@Controller('claims')
+@Controller({
+  path: 'claims',
+  version: '1',
+})
 export class ClaimsController {
   constructor(private readonly claimsService: ClaimsService) {}
 
@@ -37,20 +40,19 @@ export class ClaimsController {
     return this.claimsService.createClaim(claimData);
   }
 
+  @Get()
+  @ApiOperation({ summary: 'Get all claims' })
+  @ApiResponse({ status: 200, type: [ClaimDto] })
+  async getAllClaims(): Promise<ClaimDto[]> {
+    return this.claimsService.getAllClaims();
+  }
+
   @Get('summary')
   @Public()
   @ApiOperation({ summary: 'Get all claims summary' })
   @ApiResponse({ status: 200, type: [ClaimDto] })
   async getAllClaimsSummary(): Promise<ClaimSummaryDto[]> {
     return this.claimsService.getAllClaimsSummary();
-  }
-
-  @Get('summary')
-  @Public()
-  @ApiOperation({ summary: 'Get all claims' })
-  @ApiResponse({ status: 200, type: [ClaimDto] })
-  async getAllClaims(): Promise<ClaimDto[]> {
-    return this.claimsService.getAllClaims();
   }
 
   @Get(':id')
