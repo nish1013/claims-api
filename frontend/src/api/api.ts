@@ -2,13 +2,22 @@ const API_URL = import.meta.env.VITE_API_URL
 
 // Fetch all claims
 export const fetchClaims = async () => {
-  const res = await fetch(`${API_URL}/claims`)
+  const token = localStorage.getItem('token')
+  if (!token) {
+    throw new Error('Not authenticated')
+  }
+  const res = await fetch(`${API_URL}/v1/claims`, {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  })
   return res.json()
 }
 
 // Fetch all claims summary (public)
 export const fetchClaimsSummary = async () => {
-  const res = await fetch(`${API_URL}/claims/summary`)
+  const res = await fetch(`${API_URL}/v1/claims/summary`)
   return res.json()
 }
 
@@ -23,7 +32,7 @@ export const submitClaim = async (claimData: {
     throw new Error('Not authenticated')
   }
 
-  const res = await fetch(`${API_URL}/claims`, {
+  const res = await fetch(`${API_URL}/v1/claims`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -49,7 +58,7 @@ export const uploadClaimDocuments = async (claimId: string, files: File[]) => {
   const formData = new FormData()
   files.forEach((file) => formData.append('files', file))
 
-  const res = await fetch(`${API_URL}/uploads/documents/${claimId}`, {
+  const res = await fetch(`${API_URL}/v1/uploads/documents/${claimId}`, {
     method: 'POST',
     body: formData,
     headers: { Authorization: `Bearer ${token}` },

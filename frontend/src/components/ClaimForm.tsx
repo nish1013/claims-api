@@ -25,7 +25,7 @@ export function ClaimForm({ onSubmit }: ClaimFormProps) {
       <input
         className="w-full p-3 rounded bg-gray-800 text-white border border-gray-600 focus:ring-2 focus:ring-blue-500"
         type="text"
-        placeholder="User ID"
+        placeholder="User ID e.g f47ac10b-58cc-4372-a567-0e02b2c3d479 (UUID)"
         value={userId}
         onChange={(e) => setUserId((e.target as HTMLInputElement).value)}
         required
@@ -33,7 +33,7 @@ export function ClaimForm({ onSubmit }: ClaimFormProps) {
       <input
         className="w-full p-3 rounded bg-gray-800 text-white border border-gray-600 focus:ring-2 focus:ring-blue-500"
         type="text"
-        placeholder="Policy Number"
+        placeholder="Policy Number e.g INS-ABC123"
         value={policyNumber}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
           setPolicyNumber((e.target as HTMLInputElement).value)
