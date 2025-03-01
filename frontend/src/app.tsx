@@ -37,7 +37,7 @@ export function App() {
       )}
 
       <div className="w-full max-w-2xl flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Insurance Claims</h1>
+        <h1 className="text-3xl font-bold">Claims Admin Portal</h1>
         {user ? (
           <button
             onClick={() => {
