@@ -18,8 +18,11 @@ export default function LoginModal({
     if (result.error) {
       return setError(result.error)
     }
-    onLogin(result.user)
-    onClose()
+
+    if (result.user) {
+      onLogin(result.user)
+      onClose()
+    }
   }
 
   return (
@@ -33,14 +36,14 @@ export default function LoginModal({
             type="text"
             placeholder="Username"
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={(e) => setUsername((e.target as HTMLInputElement).value)}
           />
           <input
             className="w-full p-3 bg-gray-700 rounded"
             type="password"
             placeholder="Password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => setPassword((e.target as HTMLInputElement).value)}
           />
           <button className="w-full bg-blue-600 p-3 rounded text-white">Login</button>
         </form>

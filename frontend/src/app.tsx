@@ -11,7 +11,7 @@ export function App() {
   const [claims, setClaims] = useState([])
   const [user, setUser] = useState<string | null>(localStorage.getItem('user'))
   const [showLogin, setShowLogin] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [_error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (isTokenExpired()) {
