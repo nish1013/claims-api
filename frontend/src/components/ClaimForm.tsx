@@ -1,31 +1,35 @@
 import { useState } from 'react'
 
 interface ClaimFormProps {
-  onSubmit: (formData: FormData) => void
+  onSubmit: (userId: string, policyNumber: string, description: string, file: File) => void
 }
 
 export function ClaimForm({ onSubmit }: ClaimFormProps) {
+  const [userId, setUserId] = useState('')
   const [policyNumber, setPolicyNumber] = useState('')
   const [description, setDescription] = useState('')
   const [file, setFile] = useState<File | null>(null)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!file) {
       alert('Please select a file before submitting.')
       return
     }
 
-    const formData = new FormData()
-    formData.append('policyNumber', policyNumber)
-    formData.append('description', description)
-    formData.append('file', file)
-
-    onSubmit(formData)
+    onSubmit(userId, policyNumber, description, file)
   }
 
   return (
     <form className="p-6 bg-gray-900 rounded-lg shadow-md space-y-4" onSubmit={handleSubmit}>
+      <input
+        className="w-full p-3 rounded bg-gray-800 text-white border border-gray-600 focus:ring-2 focus:ring-blue-500"
+        type="text"
+        placeholder="User ID"
+        value={userId}
+        onChange={(e) => setUserId(e.target.value)}
+        required
+      />
       <input
         className="w-full p-3 rounded bg-gray-800 text-white border border-gray-600 focus:ring-2 focus:ring-blue-500"
         type="text"

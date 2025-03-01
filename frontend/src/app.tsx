@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { ClaimForm } from './components/ClaimForm'
 import { ClaimList } from './components/ClaimList'
 import LoginModal from './components/LoginModal'
-import { fetchClaims, submitClaim } from './api/claims'
+import { fetchClaims, submitClaim, uploadClaimDocuments } from './api/api'
 import { logout } from './api/auth'
 
 export function App() {
@@ -17,14 +17,20 @@ export function App() {
       .catch(() => setError('Failed to load claims'))
   }, [])
 
-  const handleClaimSubmit = async (data: FormData) => {
+  const handleClaimSubmit = async (
+    userId: string,
+    policyNumber: string,
+    description: string,
+    file: File
+  ) => {
     if (!user) {
       setShowLogin(true)
       return
     }
     try {
-      await submitClaim(data)
-      setClaims(await fetchClaims()) // Refresh claims
+      const { _id } = await submitClaim({ userId, policyNumber, description })
+      await uploadClaimDocuments(_id, [file])
+      setClaims(await fetchClaims()) // Refresh claims after upload
     } catch {
       setError('Failed to submit claim')
     }
