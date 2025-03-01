@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNotEmpty } from 'class-validator';
 
 export class CreateClaimDto {
-  @ApiProperty({ example: '12345', description: 'User ID' })
+  @ApiProperty({ example: 'abc123', description: 'User ID of claim owner' })
   @IsString()
   @IsNotEmpty()
   userId: string;

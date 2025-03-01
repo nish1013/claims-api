@@ -5,7 +5,7 @@ export class ClaimDto {
   @ApiProperty({ example: '65d4f1c3b12a3e9b9d6f7e2a', description: 'Claim ID' })
   _id: string;
 
-  @ApiProperty({ example: '12345', description: 'User ID' })
+  @ApiProperty({ example: 'abc123', description: 'User ID of claim owner' })
   userId: string;
 
   @ApiProperty({ example: 'INS-5678', description: 'Policy Number' })
@@ -22,10 +22,22 @@ export class ClaimDto {
   status: ClaimStatus;
 
   @ApiProperty({
-    example: ['https://example.com/document1.pdf'],
-    description: 'Document URLs',
+    example: ['https://res.cloudinary.com/xyz/document1.pdf'],
+    description: 'Claim document URLs',
   })
   documentUrls: string[];
+
+  @ApiProperty({
+    example: '2025-03-01T14:00:00.000Z',
+    description: 'Claim creation timestamp',
+  })
+  createdAt: Date;
+
+  @ApiProperty({
+    example: '2025-03-01T14:05:00.000Z',
+    description: 'Last update timestamp',
+  })
+  updatedAt: Date;
 
   constructor(partial: Partial<ClaimDto>) {
     Object.assign(this, partial);
