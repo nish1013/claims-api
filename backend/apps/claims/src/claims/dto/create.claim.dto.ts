@@ -1,19 +1,9 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, OmitType, PickType } from '@nestjs/swagger';
 import { IsString, IsNotEmpty } from 'class-validator';
+import { ClaimDto } from './claim.dto';
 
-export class CreateClaimDto {
-  @ApiProperty({ example: 'abc123', description: 'User ID of claim owner' })
-  @IsString()
-  @IsNotEmpty()
-  userId: string;
-
-  @ApiProperty({ example: 'INS-5678', description: 'Policy Number' })
-  @IsString()
-  @IsNotEmpty()
-  policyNumber: string;
-
-  @ApiProperty({ example: 'Cargo damage', description: 'Claim Description' })
-  @IsString()
-  @IsNotEmpty()
-  description: string;
-}
+export class CreateClaimDto extends PickType(ClaimDto, [
+  'userId',
+  'policyNumber',
+  'description',
+] as const) {}
