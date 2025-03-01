@@ -3,16 +3,16 @@ import { ClaimDto } from '../dto/claim.dto';
 
 export class ClaimMapper {
   static toDto(claim: Claim): ClaimDto {
-    return new ClaimDto({
-      _id: claim._id as string,
-      userId: claim.userId,
-      policyNumber: claim.policyNumber,
-      description: claim.description,
-      status: claim.status,
-      documentUrls: claim.documentUrls,
-      createdAt: claim.createdAt,
-      updatedAt: claim.updatedAt,
-    });
+    const dto = new ClaimDto();
+    dto._id = String(claim._id);
+    dto.userId = claim.userId;
+    dto.policyNumber = claim.policyNumber;
+    dto.description = claim.description;
+    dto.status = claim.status;
+    dto.documentUrls = claim.documentUrls;
+    dto.createdAt = claim.createdAt;
+    dto.updatedAt = claim.updatedAt;
+    return dto;
   }
 
   static toDtoList(claims: Claim[]): ClaimDto[] {

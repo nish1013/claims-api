@@ -2,20 +2,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 import { ClaimsService } from './claims.service';
 import { Claim } from './schemas/claims.schema';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { ClaimStatus } from './interfaces/claim.status';
-import { ClaimDto } from './dto/claim.dto';
-import { ClaimMapper } from './mappers/claim.mapper';
-
-const createMockClaim = (): ClaimDto => {
-  return new ClaimDto({
-    _id: new Types.ObjectId().toString(),
-    userId: '123',
-    policyNumber: 'ABC123',
-    description: 'Test claim',
-    status: ClaimStatus.PENDING,
-  });
-};
+import { createMockClaim } from './utils/mock-claim.util';
 
 const createQueryMock = <T>(
   result: T,

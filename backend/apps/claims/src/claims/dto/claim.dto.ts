@@ -4,6 +4,12 @@ import { IsString, Matches, IsUUID } from 'class-validator';
 
 export class ClaimDto {
   @ApiProperty({
+    example: '65d4f1c3b12a3e9b9d6f7e2a',
+    description: 'Claim ID',
+  })
+  _id: string;
+
+  @ApiProperty({
     example: '65d4f1c3-b12a-4e9b-9d6f-7e2af2ab1234',
     description: 'User ID of claim owner (UUID)',
   })
@@ -49,10 +55,4 @@ export class ClaimDto {
     description: 'Last update timestamp',
   })
   updatedAt: Date;
-
-  @ApiProperty({
-    example: '65d4f1c3b12a3e9b9d6f7e2a',
-    description: 'Claim ID',
-  })
-  _id: string;
 }

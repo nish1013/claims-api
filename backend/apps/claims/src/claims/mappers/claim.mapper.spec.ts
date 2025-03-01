@@ -20,7 +20,7 @@ describe('ClaimMapper', () => {
       const result = ClaimMapper.toDto(mockClaim);
 
       expect(result).toBeInstanceOf(ClaimDto);
-      expect(result._id).toBe(mockClaim._id as string);
+      expect(result._id).toBe(String(mockClaim._id));
       expect(result.userId).toBe(mockClaim.userId);
       expect(result.policyNumber).toBe(mockClaim.policyNumber);
       expect(result.description).toBe(mockClaim.description);
@@ -36,7 +36,7 @@ describe('ClaimMapper', () => {
       expect(result).toHaveLength(mockClaims.length);
       result.forEach((dto, index) => {
         expect(dto).toBeInstanceOf(ClaimDto);
-        expect(dto._id).toBe(mockClaims[index]._id as string);
+        expect(dto._id).toBe(String(mockClaims[index]._id));
         expect(dto.userId).toBe(mockClaims[index].userId);
         expect(dto.policyNumber).toBe(mockClaims[index].policyNumber);
         expect(dto.description).toBe(mockClaims[index].description);

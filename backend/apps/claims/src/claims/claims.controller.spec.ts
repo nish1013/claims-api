@@ -1,21 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ClaimsController } from './claims.controller';
 import { ClaimsService } from './claims.service';
-import { ClaimDto } from './dto/claim.dto';
 import { CreateClaimDto } from './dto/create.claim.dto';
 import { UpdateClaimDto } from './dto/update.claim.dto';
 import { ClaimStatus } from './interfaces/claim.status';
-import { Types } from 'mongoose';
-
-const createMockClaim = (): ClaimDto => {
-  return new ClaimDto({
-    _id: new Types.ObjectId().toString(),
-    userId: '123',
-    policyNumber: 'ABC123',
-    description: 'Test claim',
-    status: ClaimStatus.PENDING,
-  });
-};
+import { createMockClaim } from './utils/mock-claim.util';
 
 const mockClaimsService = {
   createClaim: jest.fn(),
