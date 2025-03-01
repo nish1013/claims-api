@@ -20,7 +20,7 @@ import { UpdateClaimDto } from './dto/update.claim.dto';
 import { CreateClaimDto } from './dto/create.claim.dto';
 import { ClaimDto } from './dto/claim.dto';
 import { ClaimDocsDto } from './dto/claim.docs.dto';
-import { Public } from 'src/api.decorator';
+import { Public } from '../api.decorator';
 
 @ApiTags('Claims')
 @ApiBearerAuth()
