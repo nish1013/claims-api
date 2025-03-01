@@ -12,6 +12,14 @@ interface ClaimListProps {
 }
 
 export function ClaimList({ claims }: ClaimListProps) {
+  if (!claims || !claims.length) {
+    return (
+      <div className="p-6 max-w-4xl mx-auto">
+        <p className="text-gray-300">No claims available.</p>
+      </div>
+    )
+  }
+
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <h2 className="text-2xl font-semibold text-white mb-4">Claims</h2>
