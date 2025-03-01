@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 interface ClaimFormProps {
-  onSubmit: (userId: string, policyNumber: string, description: string, file: File) => void
+  onSubmit: (userId: string, policyNumber: string, description: string, file: File) => Promise<void>
 }
 
 export function ClaimForm({ onSubmit }: ClaimFormProps) {
@@ -9,6 +9,7 @@ export function ClaimForm({ onSubmit }: ClaimFormProps) {
   const [policyNumber, setPolicyNumber] = useState('')
   const [description, setDescription] = useState('')
   const [file, setFile] = useState<File | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -17,7 +18,12 @@ export function ClaimForm({ onSubmit }: ClaimFormProps) {
       return
     }
 
-    onSubmit(userId, policyNumber, description, file)
+    try {
+      setIsSubmitting(true)
+      await onSubmit(userId, policyNumber, description, file)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -35,9 +41,7 @@ export function ClaimForm({ onSubmit }: ClaimFormProps) {
         type="text"
         placeholder="Policy Number e.g INS-ABC123"
         value={policyNumber}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          setPolicyNumber((e.target as HTMLInputElement).value)
-        }
+        onChange={(e) => setPolicyNumber((e.target as HTMLInputElement).value)}
         required
       />
       <textarea
@@ -53,8 +57,14 @@ export function ClaimForm({ onSubmit }: ClaimFormProps) {
         onChange={(e) => setFile((e.target as HTMLInputElement).files?.[0] || null)}
         accept="image/png, image/jpeg, application/pdf"
       />
-      <button type="submit" className="w-full bg-blue-600 hover:bg-blue-500 p-3 rounded text-white">
-        Submit Claim
+      <button
+        type="submit"
+        disabled={isSubmitting}
+        className={`w-full p-3 rounded text-white ${
+          isSubmitting ? 'bg-gray-600 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500'
+        }`}
+      >
+        {isSubmitting ? 'Submitting...' : 'Submit Claim'}
       </button>
     </form>
   )
