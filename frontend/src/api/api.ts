@@ -78,6 +78,8 @@ export const getPolicies = async () => {
   const policies: Policy[] = [
     { userId: '65d4f1c3-b12a-4e9b-9d6f-7e2af2ab1234', policyNumber: 'INS-7856' },
     { userId: '95d4f1c3-b12a-4e9b-9d6f-7e2af2ab1234', policyNumber: 'INS-4509' },
+    { userId: '10d4f1c3-b12a-4e9b-9d6f-7e2af2ab1234', policyNumber: 'INS-6700' },
+    { userId: '65d4f1c3-b12a-4e9b-9d6f-7e2af2ab1234', policyNumber: 'INS-9520' },
   ]
 
   return policies
