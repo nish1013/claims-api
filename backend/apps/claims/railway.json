@@ -1,0 +1,9 @@
+{
+  "build": {
+    "root": "backend/apps/claims",
+    "dockerfile": "backend/apps/claims/Dockerfile"
+  },
+  "deploy": {
+    "startCommand": "node dist/main"
+  }
+}
