@@ -1,6 +1,6 @@
 [build]
 builder = "DOCKERFILE"
-dockerfilePath = "backend/apps/claims/Dockerfile"
+dockerfilePath = "Dockerfile"
 
 [deploy]
 startCommand = "npm run start:prod"
