@@ -1,15 +1,29 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+
+interface Policy {
+  userId: string
+  policyNumber: string
+}
 
 interface ClaimFormProps {
   onSubmit: (userId: string, policyNumber: string, description: string, file: File) => Promise<void>
+  policies: Policy[]
 }
 
-export function ClaimForm({ onSubmit }: ClaimFormProps) {
-  const [userId, setUserId] = useState('')
-  const [policyNumber, setPolicyNumber] = useState('')
+export function ClaimForm({ onSubmit, policies }: ClaimFormProps) {
+  const [selectedPolicy, setSelectedPolicy] = useState<Policy | null>(
+    policies.length > 0 ? policies[0] : null
+  )
   const [description, setDescription] = useState('')
   const [file, setFile] = useState<File | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  // Update selectedPolicy when policies prop changes
+  useEffect(() => {
+    if (policies.length > 0) {
+      setSelectedPolicy(policies[0])
+    }
+  }, [policies])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -17,10 +31,13 @@ export function ClaimForm({ onSubmit }: ClaimFormProps) {
       alert('Please select a file before submitting.')
       return
     }
-
+    if (!selectedPolicy) {
+      alert('Please select a policy.')
+      return
+    }
     try {
       setIsSubmitting(true)
-      await onSubmit(userId, policyNumber, description, file)
+      await onSubmit(selectedPolicy.userId, selectedPolicy.policyNumber, description, file)
     } finally {
       setIsSubmitting(false)
     }
@@ -28,22 +45,26 @@ export function ClaimForm({ onSubmit }: ClaimFormProps) {
 
   return (
     <form className="p-6 bg-gray-900 rounded-lg shadow-md space-y-4" onSubmit={handleSubmit}>
-      <input
-        className="w-full p-3 rounded bg-gray-800 text-white border border-gray-600 focus:ring-2 focus:ring-blue-500"
-        type="text"
-        placeholder="User ID e.g f47ac10b-58cc-4372-a567-0e02b2c3d479 (UUID)"
-        value={userId}
-        onChange={(e) => setUserId((e.target as HTMLInputElement).value)}
-        required
-      />
-      <input
-        className="w-full p-3 rounded bg-gray-800 text-white border border-gray-600 focus:ring-2 focus:ring-blue-500"
-        type="text"
-        placeholder="Policy Number e.g INS-ABC123"
-        value={policyNumber}
-        onChange={(e) => setPolicyNumber((e.target as HTMLInputElement).value)}
-        required
-      />
+      <div>
+        <label className="block mb-2">Select Policy</label>
+        <select
+          className="w-full p-3 rounded bg-gray-800 text-white border border-gray-600 focus:ring-2 focus:ring-blue-500"
+          value={selectedPolicy ? selectedPolicy.policyNumber : ''}
+          onChange={(e) => {
+            const policy = policies.find(
+              (p) => p.policyNumber === (e.target as HTMLInputElement).value
+            )
+            setSelectedPolicy(policy || null)
+          }}
+          required
+        >
+          {policies.map((policy) => (
+            <option key={policy.policyNumber} value={policy.policyNumber}>
+              {policy.policyNumber} ({policy.userId})
+            </option>
+          ))}
+        </select>
+      </div>
       <textarea
         className="w-full p-3 rounded bg-gray-800 text-white border border-gray-600 focus:ring-2 focus:ring-blue-500"
         placeholder="Description"

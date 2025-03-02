@@ -3,3 +3,8 @@ export enum ClaimStatus {
   APPROVED = 'approved',
   REJECTED = 'rejected',
 }
+
+export interface Policy {
+  userId: string
+  policyNumber: string
+}

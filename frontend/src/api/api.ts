@@ -1,3 +1,5 @@
+import { Policy } from './interfaces/data'
+
 const API_URL = import.meta.env.VITE_API_URL
 
 // Fetch all claims
@@ -69,4 +71,14 @@ export const uploadClaimDocuments = async (claimId: string, files: File[]) => {
   }
 
   return res.json() // Expecting { documentUrls: ["..."] }
+}
+
+//TODO: use policy api
+export const getPolicies = async () => {
+  const policies: Policy[] = [
+    { userId: '65d4f1c3-b12a-4e9b-9d6f-7e2af2ab1234', policyNumber: 'INS-7856' },
+    { userId: '95d4f1c3-b12a-4e9b-9d6f-7e2af2ab1234', policyNumber: 'INS-4509' },
+  ]
+
+  return policies
 }

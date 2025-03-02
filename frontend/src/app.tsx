@@ -3,15 +3,23 @@ import { ClaimForm } from './components/ClaimForm'
 import { ClaimList } from './components/ClaimList'
 import LoginModal from './components/LoginModal'
 import { Navbar } from './components/NavBar'
-import { fetchClaims, submitClaim, uploadClaimDocuments, fetchClaimsSummary } from './api/api'
+import {
+  fetchClaims,
+  submitClaim,
+  uploadClaimDocuments,
+  fetchClaimsSummary,
+  getPolicies,
+} from './api/api'
 import { logout } from './api/auth'
 import { isTokenExpired } from './api/token'
+import { Policy } from './api/interfaces/data'
 
 export function App() {
   const [claims, setClaims] = useState([])
   const [user, setUser] = useState<string | null>(localStorage.getItem('user'))
   const [showLogin, setShowLogin] = useState(false)
   const [_error, setError] = useState<string | null>(null)
+  const [policies, setPolicies] = useState<Policy[]>([])
 
   useEffect(() => {
     if (isTokenExpired()) {
@@ -30,6 +38,18 @@ export function App() {
         .then(setClaims)
         .catch(() => setError('Failed to load claims list'))
     }
+  }, [user])
+
+  useEffect(() => {
+    async function loadPolicies() {
+      try {
+        const policies = await getPolicies()
+        setPolicies(policies)
+      } catch (error) {
+        console.error('Error loading policies', error)
+      }
+    }
+    loadPolicies()
   }, [])
 
   const handleClaimSubmit = async (
@@ -85,7 +105,7 @@ export function App() {
       </div>
 
       {!user && <p className="text-gray-400 mb-4">Login to submit a claim.</p>}
-      <ClaimForm onSubmit={handleClaimSubmit} />
+      <ClaimForm onSubmit={handleClaimSubmit} policies={policies} />
       <ClaimList claims={claims} />
     </div>
   )
