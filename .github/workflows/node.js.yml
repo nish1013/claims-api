@@ -21,31 +21,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
 
-      - name: Install backend dependencies
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-          cache-dependency-path: backend/apps/claims/package-lock.json
-      - run: cd backend/apps/claims && npm ci
+      - name: Install claims dependencies
+        run: cd backend/apps/claims && npm install
 
       # - name: Install underwriter dependencies
-      #   uses: actions/setup-node@v4
-      #   with:
-      #     node-version: ${{ matrix.node-version }}
-      #     cache: 'npm'
-      #     cache-dependency-path: backend/apps/underwriter/package-lock.json
-      # - run: cd backend/apps/underwriter && npm ci
+      #   run: cd backend/apps/underwriter && npm install
 
       - name: Install frontend dependencies
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
-      - run: cd frontend && npm ci
+        run: cd frontend && npm install
 
       - name: Build backend
         run: npm run build:backend
