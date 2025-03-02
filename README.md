@@ -1,34 +1,94 @@
 # Claims API
 
-A **NestJS-based** insurance claims API for managing claim submissions, retrieval, and updates.
+A NestJS-based insurance claims API integrated with third-party underwriters using secure HMAC authentication. Claim updates are received in real time via webhooks, and the accompanying Preact + Vite-based admin portal UI displays live claim status changes via WebSockets.
 
 ## Features
 
-- **Submit new claims**
-- **Retrieve all claims**
-- **Get claim details by ID**
-- **Update claim status**
-- **Upload supporting documents to Cloudinary**
-- **Swagger API documentation**
-- **MongoDB integration**
+- Submit New Claims
+- Retrieve Claims
+- Update Claims
+- Upload Supporting Documents to Cloudinary
+- Real-time Updates via WebSockets
+- Secure Integration with Underwriters (using HMAC)
+- Swagger API Documentation
+- MongoDB Integration
+- Underwriter App – Showcasing external third-party API integration
 
-## Installation
+## Project Structure
+
+```
+claims-api/
+├── backend/
+│   └── apps/
+│       ├── claims/
+│       │   ├── src/
+│       │   ├── package.json
+│       │   └── .env.example
+│       ├── underwriter/
+│       │   ├── src/
+│       │   ├── package.json
+│       │   └── .env.example
+├── frontend/ (Preact + Vite)
+│   ├── src/
+│   ├── package.json
+│   └── .env.example
+├── docker-compose.yml
+└── README.md
+```
+
+## Environment Variables
+
+Copy the `.env.example` files in each sub-project to `.env` and update the values.
+
+Example for backend (backend/apps/claims/.env):
 
 ```sh
-npm install
+MONGO_URI=mongodb://mongo:27017/claims-api
+AUTH_SECRET=your-jwt-secret
+AUTH_EXPIRES_IN=5m
+PORT=3000
+CLOUDINARY_CLOUD_NAME=your-cloud-name
+CLOUDINARY_API_KEY=your-api-key
+CLOUDINARY_API_SECRET=your-api-secret
+```
+
+Example for frontend (frontend/.env):
+
+```sh
+VITE_API_URL=http://localhost:3000/api
+```
+
+Example for underwriter app (backend/apps/underwriter/.env):
+
+```sh
+UNDERWRITER_API_KEY=your-api-key
+UNDERWRITER_SECRET=your-secret-key
 ```
 
 ## Running the Application
 
+### Recommended: Using Docker Compose
+
 ```sh
-# Development
-npm run start
+docker-compose up --build
+```
 
-# Watch mode (hot reload)
-npm run start:dev
+### Without Docker
 
-# Production
-npm run start:prod
+#### Backend
+
+```sh
+cd backend/apps/claims && npm install && npm run start:dev
+```
+
+```sh
+cd backend/apps/underwriter && npm install && npm run start:dev
+```
+
+#### Frontend (Preact + Vite)
+
+```sh
+cd frontend && npm install && npm run dev
 ```
 
 ## API Documentation
@@ -41,80 +101,47 @@ http://localhost:3000/api
 
 ### Using Swagger Authentication
 
-1. Open the Swagger UI at `http://localhost:3000/api`.
-2. Click on the "Authorize" button.
-3. Enter the **Bearer token** obtained from the `/auth/login` endpoint in the format:
-   ```
-   Bearer your.jwt.token
-   ```
-4. Click "Authorize" to use authenticated requests in Swagger.
+Open Swagger UI, click "Authorize", enter the token as: `Bearer your.jwt.token`, and click "Authorize".
 
-Now, you can test protected endpoints directly from the Swagger UI.
+## Underwriter App Integration
+
+The **Underwriter App** is designed to showcase external third-party API integration. The **Claims API** submits claims to the **Underwriter App**, which then assesses the claim and sends updates via webhooks using **HMAC authentication**. The Claims API processes these updates and notifies the admin UI in real-time via WebSockets.
+
+### Workflow
+1. **Claim Submission:** Claims API receives a new claim.
+2. **Claims API Calls Underwriter:** The Claims API sends the claim to the Underwriter API using HMAC authentication.
+3. **Underwriter Processes Claim:** The Underwriter API evaluates the claim and determines a status (APPROVED, REJECTED, PENDING).
+4. **Underwriter Sends Webhook Update:** The Underwriter API triggers a webhook request to the Claims API to notify it of the claim decision.
+5. **Claims API Updates Claim:** The Claims API updates the claim status in the database and logs the response.
+6. **Real-time Updates to Admin UI:** The Claims API broadcasts a WebSocket event so the admin UI receives the status update instantly.
 
 ## Uploading Documents to Cloudinary
 
-The API supports uploading claim-related documents (PDFs, images) to **Cloudinary**.
-
-### Steps to Upload Documents
-
-1. **Set up Cloudinary**
-
-   - Create an account at [Cloudinary](https://cloudinary.com/).
-   - Get your **Cloud Name, API Key, and API Secret** from the Cloudinary dashboard.
-
-2. **Configure Environment Variables** Add the following to your `.env` file:
-
-   ```sh
-   CLOUDINARY_CLOUD_NAME=your-cloud-name
-   CLOUDINARY_API_KEY=your-api-key
-   CLOUDINARY_API_SECRET=your-api-secret
-   ```
-
-3. **Upload a Document**
-
-   - Use the `POST /uploads/documents` endpoint.
-   - Attach files using the `multipart/form-data` format.
-   - The API will store the uploaded document on Cloudinary and return a **secure URL**.
-
-4. **Retrieve Uploaded Documents**
-
-   - Each claim will store a reference to the uploaded document URLs.
-   - Use `GET /claims/:id` to view associated documents.
+Set up a Cloudinary account and update the backend `.env` file with your credentials. Use the `POST /uploads/documents` endpoint with multipart/form-data to upload files. Retrieve document URLs via `GET /claims/:id`.
 
 ## Running Tests
 
-```sh
-# Unit tests
-npm run test
+#### Backend Tests
 
-# Test coverage
-npm run test:cov
+```sh
+cd backend/apps/claims && npm run test
 ```
 
-## Environment Variables
+```sh
+cd backend/apps/underwriter && npm run test
+```
 
-Configure your `.env` file with the required values:
+#### Frontend Tests
 
 ```sh
-MONGO_URI=mongodb://localhost:27017/your-database-name
-AUTH_SECRET=your-jwt-secret
-AUTH_EXPIRES_IN=1d
-AUTH_USERNAME=username
-AUTH_PASSWORD=password
-PORT=3000
-
-# Cloudinary
-CLOUDINARY_CLOUD_NAME=your-cloud-name
-CLOUDINARY_API_KEY=your-api-key
-CLOUDINARY_API_SECRET=your-api-secret
+cd frontend && npm run test
 ```
 
 ## Deployment
 
-To deploy the API, follow standard **NestJS deployment guidelines**:\
-[NestJS Deployment Guide](https://docs.nestjs.com/deployment)
+Use standard NestJS deployment guidelines for the backend and your preferred process for the frontend. For Docker deployments, use the provided `docker-compose.yml`.
 
 ## License
 
-This project is **MIT Licensed**.
+MIT Licensed
 
