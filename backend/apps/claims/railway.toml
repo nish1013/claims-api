@@ -1,0 +1,6 @@
+[build]
+builder = "DOCKERFILE"
+buildCommand = "docker build -t claims-api -f backend/apps/claims/Dockerfile ."
+
+[deploy]
+startCommand = "docker run -p 4000:4000 claims-api"
