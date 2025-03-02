@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "clean": "rm -rf dist"
   },
   "dependencies": {
     "preact": "^10.26.2"

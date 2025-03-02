@@ -1,0 +1,17 @@
+{
+  "name": "claims-api",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "clean": "rm -rf backend/apps/claims/dist frontend/dist",
+    "build:backend": "cd backend/apps/claims && npm install && npm run clean && npm run build",
+    "build:frontend": "cd frontend && npm install && npm run clean && npm run build",
+    "build": "npm run clean && npm run build:backend && npm run build:frontend",
+    "format:backend": "cd backend/apps/claims && npm run format",
+    "format:frontend": "cd frontend && npm run format",
+    "format": "npm run format:backend && npm run format:frontend",
+    "test:backend": "cd backend/apps/claims && npm install && npm run test",
+    "test:frontend": "cd frontend && npm install && npm run test",
+    "test": "npm run test:backend"
+  }
+}
