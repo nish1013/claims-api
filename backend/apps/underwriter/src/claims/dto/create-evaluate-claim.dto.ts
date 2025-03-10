@@ -1,15 +1,14 @@
 import { IsString, IsNotEmpty } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { ClaimStatus } from '../interfaces/claim.status';
 
-export class EvaluateClaimDto {
+export class CreateEvaluateClaimDto {
   @ApiProperty({ example: '12345', description: 'Unique Claim ID' })
   @IsString()
   @IsNotEmpty()
   claimId: string;
 
-  @ApiProperty({ example: 'review', description: 'Claims status' })
+  @ApiProperty({ example: 'INS-6789', description: 'Policy Number' })
   @IsString()
   @IsNotEmpty()
-  status: ClaimStatus;
+  policyNumber: string;
 }
