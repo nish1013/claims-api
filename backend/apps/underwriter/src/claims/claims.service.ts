@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import { ClaimStatus } from './interfaces/claim.status';
+import { EvaluateClaimDto } from './dto/evaluate-claim.dto';
 
 @Injectable()
 export class ClaimsService {
@@ -15,7 +16,7 @@ export class ClaimsService {
   /**
    * Processes a claim and schedules underwriting evaluation.
    */
-  async processClaim(claimId: string, policyNumber: string) {
+  async processClaim(claimId: string, policyNumber: string): Promise<EvaluateClaimDto> {
     this.logger.log(`Received claim ${claimId}, scheduling underwriting`);
 
     // Schedule underwriting decision with random delay (1 to 5 seconds)
