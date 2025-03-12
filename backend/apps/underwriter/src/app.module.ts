@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ClaimsModule } from './claims/claims.module';
 import { ConfigModule } from '@nestjs/config';
-import { ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -13,5 +14,11 @@ import { ThrottlerModule } from '@nestjs/throttler';
     ]),
     ConfigModule.forRoot({ isGlobal: true }),
     ClaimsModule],
+    providers: [
+      {
+        provide: APP_GUARD,
+        useClass: ThrottlerGuard,
+      },
+    ],
 })
 export class AppModule {}
