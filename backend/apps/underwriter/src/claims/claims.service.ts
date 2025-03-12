@@ -14,31 +14,21 @@ export class ClaimsService {
   }
 
   /**
-   * Processes a claim and schedules underwriting evaluation.
+   * Processes a claim, evaluates it immediately, and schedules webhook notification.
    */
   async processClaim(claimId: string, policyNumber: string): Promise<EvaluateClaimDto> {
-    this.logger.log(`Received claim ${claimId}, scheduling underwriting`);
+    this.logger.log(`Received claim ${claimId}, processing underwriting decision.`);
 
-    // Schedule underwriting decision with random delay (1 to 5 seconds)
-    setTimeout(() => this.evaluateClaim(claimId, policyNumber), this.getRandomDelay());
+    const decision = this.underwrite(policyNumber);
+    this.logger.log(`Claim ${claimId} decision: ${decision}`);
+
+    setTimeout(() => this.sendWebhookNotification(claimId, decision), this.getRandomDelay());
 
     return { claimId, status: ClaimStatus.REVIEW };
   }
 
   /**
-   * Evaluates claim and sends result via webhook.
-   */
-  private async evaluateClaim(claimId: string, policyNumber: string) {
-    const decision = this.underwrite(policyNumber);
-    this.logger.log(`Claim ${claimId} decision: ${decision}`);
-
-    if (this.webhookUrl) {
-      await this.notifyWebhook(claimId, decision);
-    }
-  }
-
-  /**
-   * Determines underwriting decision based on last digit of policy number.
+   * Determines underwriting decision based on last digit of policy number for demo purpose.
    */
   private underwrite(policyNumber: string): ClaimStatus {
     const lastDigit = parseInt(policyNumber.slice(-1), 10);
@@ -48,7 +38,7 @@ export class ClaimsService {
   /**
    * Sends underwriting result to a webhook.
    */
-  private async notifyWebhook(claimId: string, decision: ClaimStatus) {
+  private async sendWebhookNotification(claimId: string, decision: ClaimStatus) {
     if (!this.webhookUrl) {
       this.logger.warn('Skipping webhook: No URL provided.');
       return;
@@ -63,7 +53,7 @@ export class ClaimsService {
   }
 
   /**
-   * Generates a random delay between 1-5 seconds.
+   * Generates a random delay between 1-5 seconds for webhook notification.
    */
   private getRandomDelay(): number {
     return Math.floor(Math.random() * 5000) + 1000; // 1000ms to 5000ms (1-5 seconds)
