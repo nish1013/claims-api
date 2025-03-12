@@ -11,6 +11,12 @@ async function bootstrap() {
     defaultVersion: '1',
   });
 
+  app.enableCors({
+    origin: process.env.CLIENT_URL,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: 'Content-Type,Authorization',
+  });
+
   const config = new DocumentBuilder()
     .setTitle('Underwriter API')
     .setDescription('API for processing underwriting decisions')
