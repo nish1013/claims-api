@@ -11,6 +11,16 @@ services:
     networks:
       - app-network
 
+  underwriter:
+    build:
+      context: ./backend/apps/underwriter
+    ports:
+      - "4001:4001"
+    env_file:
+      - ./backend/apps/underwriter/.env
+    networks:
+      - app-network
+
   frontend:
     build:
       context: ./frontend
