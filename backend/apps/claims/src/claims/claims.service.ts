@@ -6,14 +6,25 @@ import { ClaimDto } from './dto/claim.dto';
 import { ClaimMapper } from './mappers/claim.mapper';
 import { ClaimSummaryDto } from './dto/claim.summary.dto';
 import { ClaimSummaryMapper } from './mappers/claim.summary.mapper';
+import { UnderwriterExternalService } from '../underwriter/underwriter-external.service';
 
 @Injectable()
 export class ClaimsService {
-  constructor(@InjectModel(Claim.name) private claimModel: Model<Claim>) {}
+  constructor(
+    @InjectModel(Claim.name) private claimModel: Model<Claim>,
+    private readonly underwriterService: UnderwriterExternalService,
+  ) {}
 
   async createClaim(data: Partial<Claim>): Promise<ClaimDto> {
     const claim = await this.claimModel.create(data);
-    return ClaimMapper.toDto(claim);
+    const claimDto = ClaimMapper.toDto(claim);
+
+    await this.underwriterService.submitClaim(
+      claimDto._id,
+      claimDto.policyNumber,
+    );
+
+    return claimDto;
   }
 
   async getAllClaims(): Promise<ClaimDto[]> {
