@@ -1,8 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
-import { ExternalService } from 'src/interfaces/external-service';
-import { ExternalAuthService } from 'src/security/external-auth.service';
+import { ExternalService } from '../interfaces/external-service';
+import { ExternalAuthService } from '../external-auth/external-auth.service';
 
 @Injectable()
 export class UnderwriterExternalService {

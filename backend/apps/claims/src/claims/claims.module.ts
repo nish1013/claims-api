@@ -3,15 +3,15 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ClaimsController } from './claims.controller';
 import { ClaimsService } from './claims.service';
 import { Claim, ClaimSchema } from './schemas/claims.schema';
-import { UnderwriterExternalService } from 'src/underwriter/underwriter-external.service';
-import { ExternalAuthService } from 'src/security/external-auth.service';
+import { UnderwriterExternalModule } from '../underwriter/underwriter-external.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Claim.name, schema: ClaimSchema }]),
+    UnderwriterExternalModule,
   ],
   controllers: [ClaimsController],
-  providers: [ClaimsService, UnderwriterExternalService, ExternalAuthService],
+  providers: [ClaimsService],
   exports: [ClaimsService],
 })
 export class ClaimsModule {}
