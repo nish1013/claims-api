@@ -17,7 +17,7 @@ export class ExternalAuthService {
    * Generates an HMAC signature for the given external service.
    */
   generateSignature(
-    payload: any,
+    payload: unknown,
     timestamp: string,
     service: ExternalService,
   ): string | null {
@@ -37,7 +37,7 @@ export class ExternalAuthService {
    * Verifies an incoming HMAC signature.
    */
   verifySignature(
-    payload: any,
+    payload: unknown,
     timestamp: string,
     receivedSignature: string,
     service: ExternalService,
