@@ -1,10 +1,27 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Claims</title>
+    <meta
+      name="description"
+      content="Submit an insurance claim, have an external underwriter decide it, and watch the status change."
+    />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="apple-touch-icon" href="/apple-icon.png" />
+    <title>Claims API</title>
+    <script>
+      // Runs before first paint so a saved light theme never flashes dark, or the reverse.
+      ;(function () {
+        var dark = true
+        try {
+          var saved = localStorage.getItem('theme')
+          if (saved === 'light') dark = false
+          if (saved === 'auto') dark = matchMedia('(prefers-color-scheme: dark)').matches
+        } catch (e) {}
+        document.documentElement.classList.toggle('dark', dark)
+      })()
+    </script>
   </head>
   <body>
     <div id="app"></div>

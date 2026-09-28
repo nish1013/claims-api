@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'preact/hooks'
 import { ClaimForm } from './components/ClaimForm'
 import { ClaimList } from './components/ClaimList'
 import LoginModal from './components/LoginModal'
-import { Navbar } from './components/NavBar'
+import { Header } from './components/Header'
+import { Footer } from './components/Footer'
 import {
   fetchClaims,
   submitClaim,
@@ -18,38 +19,27 @@ export function App() {
   const [claims, setClaims] = useState([])
   const [user, setUser] = useState<string | null>(localStorage.getItem('user'))
   const [showLogin, setShowLogin] = useState(false)
-  const [_error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
   const [policies, setPolicies] = useState<Policy[]>([])
 
   useEffect(() => {
     if (isTokenExpired()) {
       logout()
       setUser(null)
-      window.location.reload()
       return
     }
 
-    if (!user) {
-      fetchClaimsSummary()
-        .then(setClaims)
-        .catch(() => setError('Failed to fetch claims summary list'))
-    } else {
-      fetchClaims()
-        .then(setClaims)
-        .catch(() => setError('Failed to load claims list'))
-    }
+    const load = user ? fetchClaims : fetchClaimsSummary
+    load()
+      .then((list) => {
+        setClaims(list)
+        setError(null)
+      })
+      .catch(() => setError('Could not load claims.'))
   }, [user])
 
   useEffect(() => {
-    async function loadPolicies() {
-      try {
-        const policies = await getPolicies()
-        setPolicies(policies)
-      } catch (error) {
-        console.error('Error loading policies', error)
-      }
-    }
-    loadPolicies()
+    getPolicies().then(setPolicies)
   }, [])
 
   const handleClaimSubmit = async (
@@ -58,12 +48,7 @@ export function App() {
     description: string,
     file: File
   ) => {
-    if (!user) {
-      setShowLogin(true)
-      return
-    }
-
-    if (isTokenExpired()) {
+    if (!user || isTokenExpired()) {
       logout()
       setUser(null)
       setShowLogin(true)
@@ -72,41 +57,55 @@ export function App() {
     try {
       const { _id } = await submitClaim({ userId, policyNumber, description })
       await uploadClaimDocuments(_id, [file])
-      setClaims(await fetchClaims()) // Refresh claims after upload
+      setClaims(await fetchClaims())
+      setError(null)
     } catch {
-      setError('Failed to submit claim')
+      setError('Could not submit the claim.')
     }
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center p-6 w-full">
-      <Navbar />
+    <div className="flex min-h-screen flex-col">
+      <Header />
       {showLogin && (
-        <LoginModal onClose={() => setShowLogin(false)} onLogin={(user) => setUser(user)} />
+        <LoginModal onClose={() => setShowLogin(false)} onLogin={(name) => setUser(name)} />
       )}
 
-      <div className="w-full max-w-2xl flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Claims Admin Portal</h1>
-        {user ? (
-          <button
-            onClick={() => {
-              logout()
-              setUser(null)
-            }}
-            className="bg-red-500 px-4 py-2 rounded"
-          >
-            Logout ({user})
-          </button>
-        ) : (
-          <button onClick={() => setShowLogin(true)} className="bg-blue-600 px-4 py-2 rounded">
-            Login
-          </button>
-        )}
-      </div>
+      <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-10">
+        <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight">Claims</h1>
+            <p className="text-muted">Submit a claim with a document, then track its status.</p>
+          </div>
+          {user ? (
+            <button
+              className="btn-ghost"
+              onClick={() => {
+                logout()
+                setUser(null)
+              }}
+            >
+              Sign out ({user})
+            </button>
+          ) : (
+            <button className="btn-primary" onClick={() => setShowLogin(true)}>
+              Sign in
+            </button>
+          )}
+        </div>
 
-      {!user && <p className="text-gray-400 mb-4">Login to submit a claim.</p>}
-      <ClaimForm onSubmit={handleClaimSubmit} policies={policies} />
-      <ClaimList claims={claims} />
+        {error && (
+          <p className="mb-6 rounded-lg border border-rejected/40 bg-rejected/10 px-4 py-3 text-sm text-rejected">
+            {error}
+          </p>
+        )}
+
+        <div className="grid gap-8 lg:grid-cols-[22rem_1fr]">
+          <ClaimForm onSubmit={handleClaimSubmit} policies={policies} disabled={!user} />
+          <ClaimList claims={claims} />
+        </div>
+      </main>
+      <Footer />
     </div>
   )
 }

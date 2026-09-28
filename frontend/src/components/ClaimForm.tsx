@@ -1,92 +1,81 @@
-import { useState, useEffect } from 'react'
-
-interface Policy {
-  userId: string
-  policyNumber: string
-}
+import { useState, useEffect } from 'preact/hooks'
+import { Policy } from '../api/interfaces/data'
 
 interface ClaimFormProps {
   onSubmit: (userId: string, policyNumber: string, description: string, file: File) => Promise<void>
   policies: Policy[]
+  disabled: boolean
 }
 
-export function ClaimForm({ onSubmit, policies }: ClaimFormProps) {
-  const [selectedPolicy, setSelectedPolicy] = useState<Policy | null>(
-    policies.length > 0 ? policies[0] : null
-  )
+export function ClaimForm({ onSubmit, policies, disabled }: ClaimFormProps) {
+  const [selectedPolicy, setSelectedPolicy] = useState<Policy | null>(policies[0] ?? null)
   const [description, setDescription] = useState('')
   const [file, setFile] = useState<File | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  // Update selectedPolicy when policies prop changes
   useEffect(() => {
-    if (policies.length > 0) {
-      setSelectedPolicy(policies[0])
-    }
+    setSelectedPolicy(policies[0] ?? null)
   }, [policies])
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: Event) => {
     e.preventDefault()
-    if (!file) {
-      alert('Please select a file before submitting.')
-      return
-    }
-    if (!selectedPolicy) {
-      alert('Please select a policy.')
-      return
-    }
+    if (!selectedPolicy) return setError('Choose a policy.')
+    if (!file) return setError('Attach a supporting document.')
+    setError(null)
     try {
       setIsSubmitting(true)
       await onSubmit(selectedPolicy.userId, selectedPolicy.policyNumber, description, file)
+      setDescription('')
     } finally {
       setIsSubmitting(false)
     }
   }
 
   return (
-    <form className="p-6 bg-gray-900 rounded-lg shadow-md space-y-4" onSubmit={handleSubmit}>
-      <div>
-        <label className="block mb-2">Select Policy</label>
+    <form className="card space-y-4 p-5" onSubmit={handleSubmit}>
+      <h2 className="text-lg font-semibold">New claim</h2>
+      <label className="block space-y-1.5">
+        <span className="text-sm text-muted">Policy</span>
         <select
-          className="w-full p-3 rounded bg-gray-800 text-white border border-gray-600 focus:ring-2 focus:ring-blue-500"
-          value={selectedPolicy ? selectedPolicy.policyNumber : ''}
+          className="field"
+          value={selectedPolicy?.policyNumber ?? ''}
           onChange={(e) => {
-            const policy = policies.find(
-              (p) => p.policyNumber === (e.target as HTMLInputElement).value
-            )
-            setSelectedPolicy(policy || null)
+            const value = (e.target as HTMLSelectElement).value
+            setSelectedPolicy(policies.find((p) => p.policyNumber === value) ?? null)
           }}
           required
         >
           {policies.map((policy) => (
             <option key={policy.policyNumber} value={policy.policyNumber}>
-              {policy.policyNumber} ({policy.userId})
+              {policy.policyNumber}
             </option>
           ))}
         </select>
-      </div>
-      <textarea
-        className="w-full p-3 rounded bg-gray-800 text-white border border-gray-600 focus:ring-2 focus:ring-blue-500"
-        placeholder="Description"
-        value={description}
-        onChange={(e) => setDescription((e.target as HTMLInputElement).value)}
-        required
-      ></textarea>
-      <input
-        type="file"
-        className="w-full p-3 bg-gray-800 text-white border border-gray-600"
-        onChange={(e) => setFile((e.target as HTMLInputElement).files?.[0] || null)}
-        accept="image/png, image/jpeg, application/pdf"
-      />
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className={`w-full p-3 rounded text-white ${
-          isSubmitting ? 'bg-gray-600 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500'
-        }`}
-      >
-        {isSubmitting ? 'Submitting...' : 'Submit Claim'}
+      </label>
+      <label className="block space-y-1.5">
+        <span className="text-sm text-muted">What happened</span>
+        <textarea
+          className="field min-h-24"
+          value={description}
+          onInput={(e) => setDescription((e.target as HTMLTextAreaElement).value)}
+          required
+        />
+      </label>
+      <label className="block space-y-1.5">
+        <span className="text-sm text-muted">Supporting document (PNG, JPEG or PDF)</span>
+        <input
+          type="file"
+          className="field file:mr-3 file:rounded-md file:border-0 file:bg-surface file:px-3 file:py-1 file:text-ink"
+          onChange={(e) => setFile((e.target as HTMLInputElement).files?.[0] ?? null)}
+          accept="image/png, image/jpeg, application/pdf"
+        />
+      </label>
+      {error && <p className="text-sm text-rejected">{error}</p>}
+      <button type="submit" disabled={disabled || isSubmitting} className="btn-primary w-full">
+        {isSubmitting ? 'Submitting…' : 'Submit claim'}
       </button>
+      {disabled && <p className="text-center text-sm text-muted">Sign in to submit a claim.</p>}
     </form>
   )
 }
