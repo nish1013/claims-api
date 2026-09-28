@@ -1,6 +1,6 @@
 import { Policy } from './interfaces/data'
 
-const API_URL = import.meta.env.VITE_API_URL
+import { API_URL } from './config'
 
 // Fetch all claims
 export const fetchClaims = async () => {

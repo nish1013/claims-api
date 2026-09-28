@@ -1,24 +1,26 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'preact/hooks'
 import { login } from '../api/auth'
 
-export default function LoginModal({
-  onClose,
-  onLogin,
-}: {
+interface LoginModalProps {
   onClose: () => void
   onLogin: (user: string) => void
-}) {
+}
+
+export default function LoginModal({ onClose, onLogin }: LoginModalProps) {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [onClose])
+
+  const handleSubmit = async (e: Event) => {
     e.preventDefault()
     const result = await login(username, password)
-    if (result.error) {
-      return setError(result.error)
-    }
-
+    if (result.error) return setError(result.error)
     if (result.user) {
       onLogin(result.user)
       onClose()
@@ -26,30 +28,43 @@ export default function LoginModal({
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-      <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-        <h2 className="text-lg font-bold mb-4">Login</h2>
-        {error && <p className="text-red-400">{error}</p>}
-        <form onSubmit={handleSubmit} className="space-y-4">
+    <div
+      className="fixed inset-0 z-50 grid place-items-center bg-black/60 p-4"
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="login-title"
+        className="card w-full max-w-sm p-6"
+      >
+        <h2 id="login-title" className="mb-4 text-lg font-semibold">
+          Sign in
+        </h2>
+        <form onSubmit={handleSubmit} className="space-y-3">
           <input
-            className="w-full p-3 bg-gray-700 rounded"
+            className="field"
             type="text"
             placeholder="Username"
+            autoComplete="username"
             value={username}
-            onChange={(e) => setUsername((e.target as HTMLInputElement).value)}
+            onInput={(e) => setUsername((e.target as HTMLInputElement).value)}
+            autoFocus
           />
           <input
-            className="w-full p-3 bg-gray-700 rounded"
+            className="field"
             type="password"
             placeholder="Password"
+            autoComplete="current-password"
             value={password}
-            onChange={(e) => setPassword((e.target as HTMLInputElement).value)}
+            onInput={(e) => setPassword((e.target as HTMLInputElement).value)}
           />
-          <button className="w-full bg-blue-600 p-3 rounded text-white">Login</button>
+          {error && <p className="text-sm text-rejected">{error}</p>}
+          <button className="btn-primary w-full">Sign in</button>
+          <button type="button" className="btn-ghost w-full" onClick={onClose}>
+            Cancel
+          </button>
         </form>
-        <button className="mt-4 text-gray-400" onClick={onClose}>
-          Cancel
-        </button>
       </div>
     </div>
   )
