@@ -11,7 +11,8 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "preact": "^10.26.2"
+    "preact": "^10.26.2",
+    "preact-iso": "^2.12.2"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.10.1",
