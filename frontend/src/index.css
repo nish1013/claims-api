@@ -63,3 +63,96 @@
     @apply rounded-xl border border-line bg-surface;
   }
 }
+
+/* Kept outside @layer so Tailwind cannot purge it. Leg a then leg b reads as one moving document. */
+.hop {
+  @apply absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 opacity-0;
+  animation: 4s ease-in-out infinite;
+}
+.hop-a {
+  animation-name: hop-a-down;
+}
+.hop-b {
+  animation-name: hop-b-down;
+}
+
+@media (min-width: 768px) {
+  .hop {
+    @apply left-0 top-1/2;
+  }
+  .hop-a {
+    animation-name: hop-a-across;
+  }
+  .hop-b {
+    animation-name: hop-b-across;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hop {
+    animation: none;
+  }
+}
+
+@keyframes hop-a-down {
+  0% {
+    top: 0;
+    opacity: 0;
+  }
+  8%,
+  40% {
+    opacity: 1;
+  }
+  48%,
+  100% {
+    top: 100%;
+    opacity: 0;
+  }
+}
+@keyframes hop-b-down {
+  0%,
+  50% {
+    top: 0;
+    opacity: 0;
+  }
+  58%,
+  90% {
+    opacity: 1;
+  }
+  98%,
+  100% {
+    top: 100%;
+    opacity: 0;
+  }
+}
+@keyframes hop-a-across {
+  0% {
+    left: 0;
+    opacity: 0;
+  }
+  8%,
+  40% {
+    opacity: 1;
+  }
+  48%,
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
+}
+@keyframes hop-b-across {
+  0%,
+  50% {
+    left: 0;
+    opacity: 0;
+  }
+  58%,
+  90% {
+    opacity: 1;
+  }
+  98%,
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
+}
